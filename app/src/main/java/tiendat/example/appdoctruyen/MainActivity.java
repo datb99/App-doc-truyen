@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
             public void afterTextChanged(Editable editable) {
                 String s = edtTimKiem.getText().toString();
                 adapter.sortTruyen(s);
+                gdvDSTruyen.setAdapter(adapter);
+
             }
         });
     }
@@ -103,5 +106,9 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
     @Override
     public void biLoi() {
         Toast.makeText(this , "Lỗi kết nối" , Toast.LENGTH_SHORT).show();
+    }
+
+    public void update(View view) {
+        new ApiLayTruyen(this).execute();
     }
 }

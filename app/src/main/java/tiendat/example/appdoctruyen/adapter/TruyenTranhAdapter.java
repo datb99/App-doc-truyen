@@ -1,5 +1,6 @@
 package tiendat.example.appdoctruyen.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,18 +34,23 @@ public class TruyenTranhAdapter extends ArrayAdapter<TruyenTranh> {
 
     public void sortTruyen(String s){
         s = s.toUpperCase();
+
         int k = 0;
-        for(int i = 0 ; i < arr.size() ; i++){
+
+        for (int i = 0 ; i < arr.size() ; i ++){
+
             TruyenTranh t = arr.get(i);
             String ten = t.getTenTruyen().toUpperCase();
-            if(ten.indexOf(s) >= 0){
-                arr.set(i , arr.get(i));
+            if(ten.contains(s)){
+                arr.set(i , arr.get(k));
                 arr.set(k , t);
-                k++;
+                k ++;
+
             }
         }
     }
 
+    @SuppressLint("InflateParams")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
