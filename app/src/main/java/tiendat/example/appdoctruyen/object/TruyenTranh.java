@@ -5,7 +5,9 @@ import android.util.JsonReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TruyenTranh {
+import java.io.Serializable;
+
+public class TruyenTranh implements Serializable {
 
     private String tenTruyen, tenChap , LinkAnh;
 

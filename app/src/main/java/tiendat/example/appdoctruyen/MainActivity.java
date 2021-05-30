@@ -2,11 +2,13 @@ package tiendat.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -75,6 +77,18 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
                 adapter.sortTruyen(s);
                 gdvDSTruyen.setAdapter(adapter);
 
+            }
+        });
+
+        gdvDSTruyen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TruyenTranh truyenTranh = truyenTranhArrayList.get(position);
+                Bundle b = new Bundle();
+                b.putSerializable("Truyen" , truyenTranh);
+                Intent intent = new Intent(MainActivity.this , ChapActivity.class);
+                intent.putExtra("data" , b);
+                startActivity(intent);
             }
         });
     }
