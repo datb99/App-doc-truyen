@@ -44,7 +44,7 @@ public class ChapActivity extends AppCompatActivity implements LayChapVe {
         setup();
         setclick();
 
-        new ApiChapTruyen(this).execute();
+        new ApiChapTruyen(this, truyenTranh.getId()).execute();
 
     }
 

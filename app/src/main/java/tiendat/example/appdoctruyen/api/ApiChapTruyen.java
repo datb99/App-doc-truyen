@@ -18,10 +18,12 @@ public class ApiChapTruyen extends AsyncTask<Void , Void , Void> {
 
     String data;
     LayChapVe layChapVe;
+    String idTruyen;
 
-    public ApiChapTruyen(LayChapVe layChapVe){
+    public ApiChapTruyen(LayChapVe layChapVe , String idTruyen){
         this.layChapVe = layChapVe;
         this.layChapVe.batDau();
+        this.idTruyen = idTruyen;
     }
 
 
@@ -31,7 +33,8 @@ public class ApiChapTruyen extends AsyncTask<Void , Void , Void> {
         OkHttpClient client = new OkHttpClient();
         //Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
         //Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layTruyen.php").build();
-        Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
+        //Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
+        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layChap.php?id=" + idTruyen).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();
