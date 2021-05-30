@@ -1,5 +1,8 @@
 package tiendat.example.appdoctruyen.object;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ChapTruyen {
     String TenChap , NgayDang;
 
@@ -22,5 +25,10 @@ public class ChapTruyen {
     public ChapTruyen(String tenChap, String ngayDang) {
         this.TenChap = tenChap;
         this.NgayDang = ngayDang;
+    }
+
+    public  ChapTruyen(JSONObject o) throws JSONException {
+        TenChap = o.getString("tenchap");
+        NgayDang = o.getString("ngaynhap");
     }
 }
