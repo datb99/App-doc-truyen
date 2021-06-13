@@ -8,9 +8,15 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
-public class DocTruyenActivity extends AppCompatActivity {
+import tiendat.example.appdoctruyen.api.ApiLayAnh;
+import tiendat.example.appdoctruyen.interfaces.LayAnhVe;
+
+public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
 
     ImageView img;
     ArrayList<String> arrUrlAnh;
@@ -26,21 +32,12 @@ public class DocTruyenActivity extends AppCompatActivity {
         anhXa();
         setUp();
         setClick();
+        new ApiLayAnh(this).execute();
 
     }
 
     private void init() {
-        arrUrlAnh = new ArrayList<>();
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-01-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-02-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-03-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-04-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-05-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-06-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-07-BLOGTRUYEN-31.jpg");
-        arrUrlAnh.add("https://truyenkinhdien.com/wp-content/uploads/2020/08/Trang-08-BLOGTRUYEN-31.jpg");
-        soTrang = arrUrlAnh.size();
-        soTrangDangDoc = 1;
+
 
 
 
@@ -52,7 +49,7 @@ public class DocTruyenActivity extends AppCompatActivity {
     }
 
     private void setUp() {
-        docTheoTrang(0);
+        //docTheoTrang(0);
     }
 
     private void setClick() {
@@ -76,5 +73,34 @@ public class DocTruyenActivity extends AppCompatActivity {
             soTrangDangDoc = soTrang;
         }
         Glide.with(this).load(arrUrlAnh.get(soTrangDangDoc - 1)).into(img);
+    }
+
+    @Override
+    public void batDau() {
+
+    }
+
+    @Override
+    public void ketThuc(String data) {
+        arrUrlAnh = new ArrayList<>();
+
+        try {
+            JSONArray arr = new JSONArray(data);
+            for(int i = 0 ; i < arr.length() ; i++){
+                arrUrlAnh.add(arr.getString(i));
+            }
+            soTrang = arrUrlAnh.size();
+            soTrangDangDoc = 1;
+            docTheoTrang(0);
+        }catch (JSONException e){
+
+        }
+
+
+    }
+
+    @Override
+    public void biLoi() {
+
     }
 }
