@@ -2,8 +2,11 @@ package tiendat.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -75,7 +78,12 @@ public class ChapActivity extends AppCompatActivity implements LayChapVe {
     }
 
     private void setclick(){
-
+        lsvDanhSachChap.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(ChapActivity.this , DocTruyenActivity.class));
+            }
+        });
     }
 
     @Override
