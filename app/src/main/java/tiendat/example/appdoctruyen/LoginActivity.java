@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
 import tiendat.example.appdoctruyen.api.ApiDangNhap;
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.DangNhap;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 import tiendat.example.appdoctruyen.object.User;
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(id.getText().toString() != "" && password.getText().toString() != ""){
+                if(!id.getText().toString().matches("") && !password.getText().toString().matches("")){
                     new ApiDangNhap(LoginActivity.this , id.getText().toString() , password.getText().toString()).execute();
                 }else {
                     Toast.makeText(LoginActivity.this , "Không được để trống dữ liệu" , Toast.LENGTH_SHORT).show();
@@ -79,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
             e.printStackTrace();
         }
         if(user != null){
+            global.user = user;
             Intent intent = new Intent(this , MainActivity.class);
             startActivity(intent);
         }else {
