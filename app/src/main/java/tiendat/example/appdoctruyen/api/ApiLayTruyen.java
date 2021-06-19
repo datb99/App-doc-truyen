@@ -9,6 +9,8 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import tiendat.example.appdoctruyen.interfaces.LayTruyenVe;
 
@@ -53,4 +55,5 @@ public class ApiLayTruyen extends AsyncTask<Void , Void , Void> {
             this.layTruyenVe.ketThuc(data);
         }
     }
+
 }

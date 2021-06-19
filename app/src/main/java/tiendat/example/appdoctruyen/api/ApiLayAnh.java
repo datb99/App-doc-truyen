@@ -17,10 +17,12 @@ import tiendat.example.appdoctruyen.interfaces.LayTruyenVe;
 public class ApiLayAnh extends AsyncTask<Void , Void , Void> {
 
     String data;
+    String idChap;
     LayAnhVe layAnhVe;
 
-    public ApiLayAnh(LayAnhVe layAnhVe){
+    public ApiLayAnh(LayAnhVe layAnhVe , String idChap){
         this.layAnhVe = layAnhVe;
+        this.idChap = idChap;
         this.layAnhVe.batDau();
     }
 
@@ -29,8 +31,9 @@ public class ApiLayAnh extends AsyncTask<Void , Void , Void> {
     protected Void doInBackground(Void... voids) {
 
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
+        //Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
         //Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layTruyen.php").build();
+        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layAnh.php?idChap=" + idChap).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

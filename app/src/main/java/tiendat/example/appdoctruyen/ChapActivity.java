@@ -27,7 +27,7 @@ import tiendat.example.appdoctruyen.interfaces.LayChapVe;
 import tiendat.example.appdoctruyen.object.ChapTruyen;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 
-public class ChapActivity extends AppCompatActivity implements LayChapVe {
+public class  ChapActivity extends AppCompatActivity implements LayChapVe {
 
     TextView txvTenTruyens;
     ImageView imgAnhTruyens;
@@ -81,7 +81,11 @@ public class ChapActivity extends AppCompatActivity implements LayChapVe {
         lsvDanhSachChap.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(ChapActivity.this , DocTruyenActivity.class));
+                Bundle b = new Bundle();
+                b.putString("idChap" , arrChap.get(position).getId());
+                Intent intent = new Intent(ChapActivity.this , DocTruyenActivity.class);
+                intent.putExtra("data" , b);
+                startActivity(intent);
             }
         });
     }

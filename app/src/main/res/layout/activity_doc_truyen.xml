@@ -6,32 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".DocTruyenActivity">
 
-    <ImageView
-        android:id="@+id/imgAnh"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/img_recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <ImageView
-        android:onClick="left"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:padding="10dp"
-        android:layout_centerVertical="true"
-        android:background="@drawable/bg_left"
-        android:src="@drawable/left" />
-
-    <ImageView
-        android:onClick="right"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:padding="10dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:rotation="180"
-        android:background="@drawable/bg_left"
-        android:src="@drawable/left" />
-
-
-
 
 
 </RelativeLayout>

@@ -1,0 +1,60 @@
+package tiendat.example.appdoctruyen.adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+import tiendat.example.appdoctruyen.R;
+
+public class ImgAdapter extends RecyclerView.Adapter<ImgAdapter.ViewHolder> {
+
+    private Context context;
+    private ArrayList<String> arrImg;
+
+    public ImgAdapter(Context context, ArrayList<String> arrImg) {
+        this.context = context;
+        this.arrImg = arrImg;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView imgView;
+
+        public ViewHolder(@NonNull View item) {
+            super(item);
+            imgView = item.findViewById(R.id.img_view);
+
+        }
+    }
+
+    @NonNull
+    @NotNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View item = inflater.inflate(R.layout.image_item, parent , false);
+        ViewHolder viewHolder = new ViewHolder(item);
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull @NotNull ImgAdapter.ViewHolder holder, int position) {
+        String url  = arrImg.get(position);
+        Glide.with(context).load(url).into(holder.imgView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return arrImg.size();
+    }
+}

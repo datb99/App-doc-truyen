@@ -1,26 +1,33 @@
 package tiendat.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import tiendat.example.appdoctruyen.adapter.ImgAdapter;
 import tiendat.example.appdoctruyen.api.ApiLayAnh;
 import tiendat.example.appdoctruyen.interfaces.LayAnhVe;
+import tiendat.example.appdoctruyen.object.TruyenTranh;
 
 public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
 
-    ImageView img;
+    RecyclerView imgRecycleView;
     ArrayList<String> arrUrlAnh;
-    int soTrang , soTrangDangDoc;
+    ImgAdapter adapter;
+
+    String idChap;
 
 
 
@@ -32,39 +39,30 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
         anhXa();
         setUp();
         setClick();
-        new ApiLayAnh(this).execute();
+        new ApiLayAnh(this , idChap).execute();
 
     }
 
     private void init() {
-
-
-
+        Bundle b = getIntent().getBundleExtra("data");
+        idChap = b.getString("idChap");
 
     }
 
     private void anhXa() {
-        img = findViewById(R.id.imgAnh);
-
+        imgRecycleView = findViewById(R.id.img_recycleview);
     }
 
     private void setUp() {
-        //docTheoTrang(0);
+
     }
 
     private void setClick() {
 
     }
 
-    public void left(View view) {
-        docTheoTrang(-1);
-    }
 
-    public void right(View view) {
-        docTheoTrang( 1);
-    }
-
-    private void docTheoTrang(int i){
+    /*private void docTheoTrang(int i){
         soTrangDangDoc  = soTrangDangDoc + i;
         if(soTrangDangDoc == 0 ){
             soTrangDangDoc ++;
@@ -73,7 +71,7 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
             soTrangDangDoc = soTrang;
         }
         Glide.with(this).load(arrUrlAnh.get(soTrangDangDoc - 1)).into(img);
-    }
+    }*/
 
     @Override
     public void batDau() {
@@ -89,18 +87,17 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
             for(int i = 0 ; i < arr.length() ; i++){
                 arrUrlAnh.add(arr.getString(i));
             }
-            soTrang = arrUrlAnh.size();
-            soTrangDangDoc = 1;
-            docTheoTrang(0);
         }catch (JSONException e){
 
         }
-
-
+        adapter = new ImgAdapter(this , arrUrlAnh);
+        imgRecycleView.setAdapter(adapter);
+        imgRecycleView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void biLoi() {
 
     }
+
 }
