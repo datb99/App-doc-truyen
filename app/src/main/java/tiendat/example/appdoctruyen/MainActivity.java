@@ -109,8 +109,7 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
                 gdvDSTruyen.setAdapter(adapter);
             }
             adapter = new TruyenTranhAdapter(this , 0 , truyenTranhArrayList);
-            Log.d("TAG1432", "ketThuc: aray size " + truyenTranhArrayList.size());
-            Log.d("TAG1432", "ketThuc: load xong truyen");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
