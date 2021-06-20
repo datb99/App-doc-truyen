@@ -16,6 +16,8 @@
             android:id="@+id/lsvBinhLuan"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            android:stackFromBottom="true"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -34,6 +36,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <EditText
+                android:imeOptions="actionGo"
                 android:id="@+id/edtBinhLuan"
                 android:layout_width="270dp"
                 android:layout_height="50dp"
@@ -49,6 +52,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/txvDang"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:gravity="center_vertical"

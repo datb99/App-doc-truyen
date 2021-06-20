@@ -1,45 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/one_above_all"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ChapActivity">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="230dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ChapActivity">
 
-        <ImageView
-            android:id="@+id/imgAnhTruyens"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/a"
-            android:scaleType="centerCrop"/>
-        <TextView
-            android:id="@+id/txvTenTruyens"
+            android:layout_height="230dp">
+
+            <ImageView
+                android:id="@+id/imgAnhTruyens"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/a"
+                android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/txvTenTruyens"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B4000000"
+                android:text="Ten Truyen"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="35sp"
+                android:padding="5dp"/>
+
+        </RelativeLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            app:tabSelectedTextColor="#333333"
+            app:tabIndicatorColor="#333333"
+            android:id="@+id/tablayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#B4000000"
-            android:text="Ten Truyen"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:textSize="35sp"
-            android:padding="5dp"/>
+            android:layout_height="50dp"/>
 
-    </RelativeLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <com.google.android.material.tabs.TabLayout
-        app:tabSelectedTextColor="#333333"
-        app:tabIndicatorColor="#333333"
-        android:id="@+id/tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+    </LinearLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+</FrameLayout>
 
-</LinearLayout>

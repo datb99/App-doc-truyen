@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group android:checkableBehavior="single">
+        <item android:id="@+id/theloai"
+            android:title="thể loại"/>
         <item android:id="@+id/like"
             android:title="yêu thích"/>
         <item android:id="@+id/ofline"
-            android:title="ofline"/>
+            android:title="offline"/>
+        <item android:id="@+id/info"
+            android:title="Chỉnh sửa thông tin"/>
     </group>
 </menu>

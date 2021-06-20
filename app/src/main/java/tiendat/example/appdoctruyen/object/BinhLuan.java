@@ -1,7 +1,10 @@
 package tiendat.example.appdoctruyen.object;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class BinhLuan {
-    String NoiDung , NgayDang , id , idUser;
+    String idBinhLuan ,NoiDung , NgayDang , id , idUser;
 
     public BinhLuan(String noiDung, String ngayDang, String id, String idUser) {
         this.NoiDung = noiDung;
@@ -11,9 +14,16 @@ public class BinhLuan {
     }
 
     public BinhLuan(String noiDung, String ngayDang, String idUser) {
-        NoiDung = noiDung;
-        NgayDang = ngayDang;
+        this.NoiDung = noiDung;
+        this.NgayDang = ngayDang;
         this.idUser = idUser;
+    }
+
+    public BinhLuan(JSONObject o) throws JSONException {
+        this.id = o.getString("id");
+        this.NoiDung = o.getString("noidung");
+        this.NgayDang = o.getString("ngaydang");
+        this.idUser = o.getString("iduser");
     }
 
     public String getNoiDung() {

@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TruyenTranh truyenTranh = truyenTranhArrayList.get(position);
+                global.truyenTranh = truyenTranhArrayList.get(position);
                 Bundle b = new Bundle();
                 b.putSerializable("Truyen" , truyenTranh);
                 Intent intent = new Intent(MainActivity.this , ChapActivity.class);

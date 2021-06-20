@@ -4,14 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,7 +34,10 @@ import java.util.ArrayList;
 import tiendat.example.appdoctruyen.adapter.ChapTruyenAdapter;
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
 import tiendat.example.appdoctruyen.api.ApiChapTruyen;
+import tiendat.example.appdoctruyen.api.ApiLayBinhLuan;
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.LayChapVe;
+import tiendat.example.appdoctruyen.object.BinhLuan;
 import tiendat.example.appdoctruyen.object.ChapTruyen;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 
@@ -45,9 +51,10 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     ViewPager viewPager;
 
     FragmentChap chapter;
-    FragmentBinhLuan binhluan;
 
     SectionsPagerAdapter sectionsPagerAdapter;
+
+    FragmentManager fm;
 
 
     @Override
@@ -125,7 +132,6 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
 
     }
 
-
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -159,5 +165,35 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
             }
             return null;
         }
+    }
+
+    public void callEditFragment(BinhLuan binhLuan){
+        FragmentEditBinhLuan fragmentEditBinhLuan = new FragmentEditBinhLuan(binhLuan);
+        fm  = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.addToBackStack("edit fragment");
+        ft.add(R.id.one_above_all , fragmentEditBinhLuan , "edit fragment");
+        ft.commit();
+    }
+
+    public void closeEditFragment(){
+        fm.popBackStackImmediate();
+        hideKeyboard(this);
+    }
+
+    public void updateBinhluan(){
+        FragmentBinhLuan fragmentBinhLuan = (FragmentBinhLuan) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem());
+        new ApiLayBinhLuan(fragmentBinhLuan , global.truyenTranh.getId()).execute();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
