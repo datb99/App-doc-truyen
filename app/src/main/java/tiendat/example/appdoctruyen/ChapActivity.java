@@ -1,18 +1,26 @@
 package tiendat.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,9 +40,14 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     TextView txvTenTruyens;
     ImageView imgAnhTruyens;
     TruyenTranh truyenTranh;
-    ListView lsvDanhSachChap;
     ArrayList<ChapTruyen> arrChap = new ArrayList<>();
-    ChapTruyenAdapter chapTruyenAdapter;
+    TabLayout tabLayout;
+    ViewPager viewPager;
+
+    FragmentChap chapter;
+    FragmentBinhLuan binhluan;
+
+    SectionsPagerAdapter sectionsPagerAdapter;
 
 
     @Override
@@ -43,11 +56,12 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
         setContentView(R.layout.activity_chap);
 
         init();
+        new ApiChapTruyen(this, truyenTranh.getId()).execute();
         anhxa();
         setup();
         setclick();
 
-        new ApiChapTruyen(this, truyenTranh.getId()).execute();
+
 
     }
 
@@ -65,29 +79,20 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     }
 
     private void anhxa(){
+        viewPager = findViewById(R.id.container);
+        tabLayout = findViewById(R.id.tablayout);
         imgAnhTruyens = findViewById(R.id.imgAnhTruyens);
         txvTenTruyens = findViewById(R.id.txvTenTruyens);
-        lsvDanhSachChap = findViewById(R.id.lsvDanhSachChap);
     }
 
     private void setup(){
         txvTenTruyens.setText(truyenTranh.getTenTruyen());
         Glide.with(this).load(truyenTranh.getLinkAnh()).into(imgAnhTruyens);
 
-        //lsvDanhSachChap.setAdapter(chapTruyenAdapter);
     }
 
     private void setclick(){
-        lsvDanhSachChap.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle b = new Bundle();
-                b.putString("idChap" , arrChap.get(position).getId());
-                Intent intent = new Intent(ChapActivity.this , DocTruyenActivity.class);
-                intent.putExtra("data" , b);
-                startActivity(intent);
-            }
-        });
+
     }
 
     @Override
@@ -105,10 +110,11 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
                 JSONObject o = arr.getJSONObject(i);
                 arrChap.add(new ChapTruyen(o));
             }
-            chapTruyenAdapter = new ChapTruyenAdapter(this, 0, arrChap);
-            lsvDanhSachChap.setAdapter(chapTruyenAdapter);
-            Log.d("TAG1432", "ketThuc: aray size " + arrChap.size());
-            Log.d("TAG1432", "ketThuc: load xong truyen");
+            chapter = new FragmentChap(arrChap);
+            sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(sectionsPagerAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -117,5 +123,41 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     @Override
     public void biLoi() {
 
+    }
+
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position) {
+                case 0:
+                    fragment = chapter;
+                    break;
+                case 1:
+                    fragment = new FragmentBinhLuan();
+                    break;
+            }
+            return fragment;
+        }
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 2;
+        }
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Chapter";
+                case 1:
+                    return "Bình luận";
+            }
+            return null;
+        }
     }
 }

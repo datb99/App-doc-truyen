@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:paddingLeft="20dp"
+        android:id="@+id/binhluan_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="admin :"
+        android:textStyle="bold"
+        android:textSize="20dp"/>
+    <TextView
+        android:id="@+id/binhluan_noidung"
+        android:paddingBottom="10dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="30dp"
+        android:paddingTop="5dp"
+        android:textSize="15dp"
+        android:text="binh luan o dayhay lam asdhjhauskjkjasiuaisfkgfoysdgflisdftgilsdfoyeagidsfg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/binhluan_ngay"
+        android:textStyle="italic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:textSize="15dp"
+        android:text="ngay dang : 20/06/2021"/>
+
+</LinearLayout>

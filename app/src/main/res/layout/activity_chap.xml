@@ -30,10 +30,16 @@
 
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/lsvDanhSachChap"
+    <com.google.android.material.tabs.TabLayout
+        app:tabSelectedTextColor="#333333"
+        app:tabIndicatorColor="#333333"
+        android:id="@+id/tablayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+        android:layout_height="50dp"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
