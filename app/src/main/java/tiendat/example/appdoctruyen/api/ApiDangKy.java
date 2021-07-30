@@ -8,6 +8,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import tiendat.example.appdoctruyen.interfaces.DangKy;
 import tiendat.example.appdoctruyen.interfaces.DangNhap;
@@ -16,19 +17,34 @@ public class ApiDangKy extends AsyncTask<Void , Void , Void> {
 
     String data;
     DangKy dangKy;
-    String id , password;
+    String id , password , number , email , address , avatar;
 
-    public ApiDangKy(DangKy dangKy , String id , String password){
+    public ApiDangKy(DangKy dangKy , String id , String password , String number , String email , String address , String avatar){
         this.dangKy = dangKy;
         this.id = id;
         this.password = password;
+        this.number = number;
+        this.email = email;
+        this.address = address;
+        this.avatar = avatar;
     }
 
 
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/DangKy.php?id=" + id + "&&password=" + password).build();
+        client.setConnectTimeout(30 , TimeUnit.SECONDS);
+        client.setWriteTimeout(1 , TimeUnit.MINUTES);
+
+        Request request = new Request
+                .Builder()
+                .url("https://mydatabase30619.000webhostapp.com/DangKy.php?" +
+                        "id=" + id +
+                        "&&password=" + password +
+                        "&&number=" + number +
+                        "&&email=" + email +
+                        "&&address=" + address+
+                        "&&avatar=" + avatar).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

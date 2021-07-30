@@ -10,6 +10,7 @@ import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.EditBinhLuan;
 
 public class ApiXoaBinhLuan extends AsyncTask<Void , Void , Void> {
@@ -17,7 +18,6 @@ public class ApiXoaBinhLuan extends AsyncTask<Void , Void , Void> {
     String data;
     EditBinhLuan editBinhLuan;
     String id ;
-
 
     public ApiXoaBinhLuan(EditBinhLuan editBinhLuan, String id) {
         this.editBinhLuan = editBinhLuan;
@@ -27,7 +27,8 @@ public class ApiXoaBinhLuan extends AsyncTask<Void , Void , Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/xoaBinhLuan.php?id=" + id).build();
+        String url = "http://"+ global.ip_address +"/public/api/xoaBinhLuan.php?id=" + id;
+        Request request = new Request.Builder().url(url).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

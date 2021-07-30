@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 
 import tiendat.example.appdoctruyen.adapter.ImgAdapter;
 import tiendat.example.appdoctruyen.api.ApiLayAnh;
+import tiendat.example.appdoctruyen.api.ApiLayAnhOffline;
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.LayAnhVe;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 
@@ -26,7 +29,6 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
     RecyclerView imgRecycleView;
     ArrayList<String> arrUrlAnh;
     ImgAdapter adapter;
-
     String idChap;
 
 
@@ -39,7 +41,12 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
         anhXa();
         setUp();
         setClick();
-        new ApiLayAnh(this , idChap).execute();
+        if (!global.isOffline){
+            new ApiLayAnh(this , idChap ).execute();
+        }else {
+            new ApiLayAnhOffline(this , idChap , getApplicationContext()).execute();
+        }
+
 
     }
 
@@ -62,17 +69,6 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
     }
 
 
-    /*private void docTheoTrang(int i){
-        soTrangDangDoc  = soTrangDangDoc + i;
-        if(soTrangDangDoc == 0 ){
-            soTrangDangDoc ++;
-        }
-        if(soTrangDangDoc > soTrang){
-            soTrangDangDoc = soTrang;
-        }
-        Glide.with(this).load(arrUrlAnh.get(soTrangDangDoc - 1)).into(img);
-    }*/
-
     @Override
     public void batDau() {
 
@@ -85,11 +81,20 @@ public class DocTruyenActivity extends AppCompatActivity implements LayAnhVe {
         try {
             JSONArray arr = new JSONArray(data);
             for(int i = 0 ; i < arr.length() ; i++){
+                Log.d("TAG1432", "ketThuc: " + arr.getString(i));
                 arrUrlAnh.add(arr.getString(i));
             }
         }catch (JSONException e){
 
         }
+        adapter = new ImgAdapter(this , arrUrlAnh);
+        imgRecycleView.setAdapter(adapter);
+        imgRecycleView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public void ketThucOffline(ArrayList<String> arrayList) {
+        arrUrlAnh = new ArrayList<>(arrayList);
         adapter = new ImgAdapter(this , arrUrlAnh);
         imgRecycleView.setAdapter(adapter);
         imgRecycleView.setLayoutManager(new LinearLayoutManager(this));

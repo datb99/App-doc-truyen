@@ -1,6 +1,8 @@
 package tiendat.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -9,6 +11,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +30,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
@@ -35,13 +43,17 @@ import tiendat.example.appdoctruyen.adapter.ChapTruyenAdapter;
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
 import tiendat.example.appdoctruyen.api.ApiChapTruyen;
 import tiendat.example.appdoctruyen.api.ApiLayBinhLuan;
+import tiendat.example.appdoctruyen.api.ApiUpdateLikedList;
+import tiendat.example.appdoctruyen.api.ApiUpdateReadLaterList;
 import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.LayChapVe;
+import tiendat.example.appdoctruyen.interfaces.UpdateLikedList;
+import tiendat.example.appdoctruyen.interfaces.UpdateReadLaterList;
 import tiendat.example.appdoctruyen.object.BinhLuan;
 import tiendat.example.appdoctruyen.object.ChapTruyen;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 
-public class  ChapActivity extends AppCompatActivity implements LayChapVe {
+public class  ChapActivity extends AppCompatActivity implements LayChapVe , UpdateLikedList , UpdateReadLaterList {
 
     TextView txvTenTruyens;
     ImageView imgAnhTruyens;
@@ -55,7 +67,11 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     SectionsPagerAdapter sectionsPagerAdapter;
 
     FragmentManager fm;
+    ImageView fab_liked , fab_read_later;
 
+    Boolean isLiked = false , isReadLater = false;
+
+    int posLiked , posRead;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,26 +79,17 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
         setContentView(R.layout.activity_chap);
 
         init();
-        new ApiChapTruyen(this, truyenTranh.getId()).execute();
+        new ApiChapTruyen(this, truyenTranh.getId() , getApplicationContext()).execute();
         anhxa();
         setup();
-        setclick();
-
-
-
+        if (!global.isOffline){
+            setclick();
+        }
     }
 
     private void init(){
         Bundle b = getIntent().getBundleExtra("data");
         truyenTranh = (TruyenTranh) b.getSerializable("Truyen");
-
-        //tao du lieu ao
-        /*arrChap = new ArrayList<>();
-        for(int i = 0 ; i < 20 ; i++){
-            arrChap.add(new ChapTruyen("chapter " + i , "30 - 06 - 1999"));
-        }
-
-        chapTruyenAdapter = new ChapTruyenAdapter(this , 0 , arrChap);*/
     }
 
     private void anhxa(){
@@ -90,15 +97,78 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
         tabLayout = findViewById(R.id.tablayout);
         imgAnhTruyens = findViewById(R.id.imgAnhTruyens);
         txvTenTruyens = findViewById(R.id.txvTenTruyens);
+        fab_liked = findViewById(R.id.btn_like);
+        fab_read_later = findViewById(R.id.btn_read_later);
     }
 
     private void setup(){
-        txvTenTruyens.setText(truyenTranh.getTenTruyen());
-        Glide.with(this).load(truyenTranh.getLinkAnh()).into(imgAnhTruyens);
+        txvTenTruyens.setText(truyenTranh.getComicName());
+        String url = "http://" + global.ip_address + truyenTranh.getUrl();
+        Glide.with(this).load(url).into(imgAnhTruyens);
+        try {
+            for (int i = 0 ; i < global.user.getArrayComicLiked().size() ; i ++){
+                if(global.user.getArrayComicLiked().get(i).equals(global.truyenTranh.getId())){
+                    Drawable drawable = getApplicationContext().getDrawable(R.drawable.item_fab_after_liked);
+                    fab_liked.setBackground(drawable);
+                    isLiked = true;
+                    posLiked = i;
+                    break;
+                }
+            }
+
+            for (int i = 0 ; i < global.user.getArrayReadLater().size() ; i ++){
+                if(global.user.getArrayReadLater().get(i).equals(global.truyenTranh.getId())){
+                    Drawable drawable = getApplicationContext().getDrawable(R.drawable.item_fab_after_liked);
+                    fab_read_later.setBackground(drawable);
+                    isReadLater = true;
+                    posRead = i;
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 
     private void setclick(){
+
+        fab_liked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isLiked){
+                    global.truyenTranh.setLikedCount(global.truyenTranh.getLikedCount() - 1);
+                    global.user.getArrayComicLiked().remove(posLiked);
+                }else {
+                    global.truyenTranh.setLikedCount(global.truyenTranh.getLikedCount() + 1);
+                    global.user.getArrayComicLiked().add(global.truyenTranh.getId());
+                }
+                new ApiUpdateLikedList(ChapActivity.this
+                        , global.user.getArrayComicLiked()
+                        , global.user.getId()
+                        , global.truyenTranh.getId()
+                        , global.truyenTranh.getLikedCount())
+                        .execute();
+            }
+        });
+
+        fab_read_later.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isReadLater){
+                    global.user.getArrayReadLater().remove(posRead);
+                }else {
+                    global.user.getArrayReadLater().add(global.truyenTranh.getId());
+                }
+                new ApiUpdateReadLaterList(global.user.getArrayReadLater()
+                        ,ChapActivity.this
+                        , global.user.getId())
+                        .execute();
+            }
+        });
 
     }
 
@@ -128,8 +198,44 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     }
 
     @Override
+    public void ketThucOffline(ArrayList<ChapTruyen> arrayList) {
+        arrChap.clear();
+        arrChap = new ArrayList<>(arrayList);
+        chapter = new FragmentChap(arrChap);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(sectionsPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
     public void biLoi() {
 
+    }
+
+    @Override
+    public void finishUpdateLikedList() {
+        if (isLiked){
+            Drawable drawable = getApplicationContext().getDrawable(R.drawable.item_fab);
+            fab_liked.setBackground(drawable);
+            isLiked = false;
+        }else {
+            Drawable drawable = getApplicationContext().getDrawable(R.drawable.item_fab_after_liked);
+            fab_liked.setBackground(drawable);
+            isLiked = true;
+        }
+    }
+
+    @Override
+    public void finishUpdateReadLaterList() {
+        if(isReadLater){
+            Drawable drawable = getApplicationContext().getDrawable(R.drawable.item_fab);
+            fab_read_later.setBackground(drawable);
+            isReadLater = false;
+        }else {
+            Drawable drawable = getApplicationContext().getDrawable(R.drawable.item_fab_after_liked);
+            fab_read_later.setBackground(drawable);
+            isReadLater = true;
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -187,13 +293,13 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe {
     }
 
     public static void hideKeyboard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            //Find the currently focused view, so we can grab the correct window token from it.
+            View view = activity.getCurrentFocus();
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = new View(activity);
+            }
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -6,12 +6,6 @@ import org.json.JSONObject;
 public class BinhLuan {
     String idBinhLuan ,NoiDung , NgayDang , id , idUser;
 
-    public BinhLuan(String noiDung, String ngayDang, String id, String idUser) {
-        this.NoiDung = noiDung;
-        this.NgayDang = ngayDang;
-        this.id = id;
-        this.idUser = idUser;
-    }
 
     public BinhLuan(String noiDung, String ngayDang, String idUser) {
         this.NoiDung = noiDung;
@@ -21,9 +15,9 @@ public class BinhLuan {
 
     public BinhLuan(JSONObject o) throws JSONException {
         this.id = o.getString("id");
-        this.NoiDung = o.getString("noidung");
-        this.NgayDang = o.getString("ngaydang");
-        this.idUser = o.getString("iduser");
+        this.NoiDung = o.getString("content");
+        this.NgayDang = o.getString("date");
+        this.idUser = o.getString("idUser");
     }
 
     public String getNoiDung() {

@@ -15,7 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppDocTruyen">
-        <activity android:name=".RegisActivity"></activity>
+        <service
+            android:name=".service.getConnection"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity android:name=".RegisActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +30,7 @@
         </activity>
         <activity android:name=".DocTruyenActivity" />
         <activity android:name=".ChapActivity" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

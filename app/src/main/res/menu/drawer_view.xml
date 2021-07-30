@@ -1,13 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/theloai"
-            android:title="thể loại"/>
-        <item android:id="@+id/like"
-            android:title="yêu thích"/>
-        <item android:id="@+id/ofline"
-            android:title="offline"/>
-        <item android:id="@+id/info"
-            android:title="Chỉnh sửa thông tin"/>
+
+        <item android:title="general">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item android:id="@+id/nav_menu_main_screen"
+                        android:title="màn hình chính"/>
+                    <item android:id="@+id/nav_menu_like"
+                        android:title="yêu thích"/>
+                    <item android:id="@+id/nav_menu_read_later"
+                        android:title="đọc sau"/>
+                    <item android:id="@+id/nav_menu_curent_chap"
+                        android:title="đọc dở"/>
+                    <item android:id="@+id/nav_menu_offline"
+                        android:title="đọc offline"/>
+                </group>
+
+            </menu>
+
+        </item>
+
+
+
+        <item android:title="thể loại">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item android:id="@+id/kindof_kiem_hiep"
+                        android:title="kiếm hiệp"/>
+                    <item android:id="@+id/kindof_thieu_nhi"
+                        android:title="thiếu nhi"/>
+                    <item android:id="@+id/kindof_uynh_lon"
+                        android:title="uýnh lộn"/>
+                    <item android:id="@+id/kindof_suc_manh_tinh_ban"
+                        android:title="sức mạnh tình bạn"/>
+                </group>
+            </menu>
+        </item>
+
+        <item android:title="profile">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item android:id="@+id/nav_menu_setting"
+                        android:title="chỉnh sửa thông tin"/>
+                    <item android:id="@+id/nav_menu_logout"
+                        android:title="đăng xuất"/>
+                </group>
+
+            </menu>
+        </item>
+
+
     </group>
 </menu>

@@ -9,6 +9,7 @@ import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.LayBinhLuan;
 
 public class ApiBinhLuan extends AsyncTask<Void , Void , Void> {
@@ -29,11 +30,19 @@ public class ApiBinhLuan extends AsyncTask<Void , Void , Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/themBinhLuan.php" +
-                "?noidung=" + noidung +
-                "&&ngaydang=" + ngaydang +
-                "&&userid=" + iduser +
-                "&&truyenid=" + idtruyen).build();
+        String url = "http://"+ global.ip_address +"/public/api/themBinhLuan.php?" +
+                "content=" + noidung +
+                "&&date="+ ngaydang +
+                "&&idUser="+ iduser +
+                "&&idComic=" + idtruyen;
+
+        Request request = new Request.Builder().url(url).build();
+
+//        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/themBinhLuan.php" +
+//                "?noidung=" + noidung +
+//                "&&ngaydang=" + ngaydang +
+//                "&&userid=" + iduser +
+//                "&&truyenid=" + idtruyen).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

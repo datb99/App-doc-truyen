@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,8 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
     EditText id, password;
     Button login , regis;
     User user;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,11 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
         password = findViewById(R.id.txtPassword);
         login = findViewById(R.id.btnLogin);
         regis = findViewById(R.id.btnRegis);
+
+        sharedPreferences = getApplicationContext().getSharedPreferences("userData" , getApplicationContext().MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        checkLogin();
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,15 +90,35 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
         if(user != null){
             global.user = user;
             Intent intent = new Intent(this , MainActivity.class);
+
+            editor.putString("id" , user.getId());
+            editor.putString("password" , user.getPasswword());
+            editor.apply();
+
             startActivity(intent);
         }else {
-            Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu hoặc lỗi kết nối" , Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void biLoi() {
-        Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu" , Toast.LENGTH_SHORT).show();
+        if (sharedPreferences.contains("id")){
+            Intent intent = new Intent(this , MainActivity.class);
+            startActivity(intent);
+        }else {
+            Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu hoặc lỗi kết nối" , Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void checkLogin() {
+
+        if (sharedPreferences.contains("id")) {
+            String id = sharedPreferences.getString("id", null);
+            String password = sharedPreferences.getString("password", null);
+            new ApiDangNhap(this, id, password).execute();
+        }
     }
 
 }

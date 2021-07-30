@@ -1,28 +1,37 @@
 package tiendat.example.appdoctruyen;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import tiendat.example.appdoctruyen.adapter.ChapTruyenAdapter;
+import tiendat.example.appdoctruyen.api.ApiSaveChap;
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.object.ChapTruyen;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentChap#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 public class FragmentChap extends Fragment {
@@ -82,6 +91,27 @@ public class FragmentChap extends Fragment {
                 Intent intent = new Intent(getContext() , DocTruyenActivity.class);
                 intent.putExtra("data" , b);
                 startActivity(intent);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final String[] option = {"thêm vào đọc sau"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext() , android.R.layout.select_dialog_item , option);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("tuỳ chọn");
+                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do this after click
+                        new ApiSaveChap(getContext() , arrChap.get(position) , global.truyenTranh).execute();
+                        Toast.makeText(getContext() , option[which] + " selected" , Toast.LENGTH_SHORT).show();
+                    }
+                });
+                final AlertDialog a = builder.create();
+                a.show();
+                return true;
             }
         });
     }

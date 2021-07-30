@@ -2,7 +2,6 @@ package tiendat.example.appdoctruyen.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +15,20 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import tiendat.example.appdoctruyen.R;
 import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 
-public class TruyenTranhAdapter extends ArrayAdapter<TruyenTranh> {
+public class LikedListAdapter extends ArrayAdapter<TruyenTranh>  {
 
-    private Context ct;
-    private ArrayList<TruyenTranh> arr;
+    Context context;
+    ArrayList<TruyenTranh> arrayList;
 
-    public TruyenTranhAdapter(@NonNull Context context, int resource, @NonNull List<TruyenTranh> objects) {
+    public LikedListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<TruyenTranh> objects) {
         super(context, resource, objects);
-        this.ct = context;
-        this.arr = (ArrayList<TruyenTranh>) objects;
+        this.context = context;
+        this.arrayList = objects;
     }
 
     public void sortTruyen(String s){
@@ -38,22 +36,16 @@ public class TruyenTranhAdapter extends ArrayAdapter<TruyenTranh> {
 
         int k = 0;
 
-        for (int i = 0 ; i < arr.size() ; i ++){
+        for (int i = 0 ; i < arrayList.size() ; i ++){
 
-            TruyenTranh t = arr.get(i);
+            TruyenTranh t = arrayList.get(i);
             String ten = t.getComicName().toUpperCase();
             if(ten.contains(s)){
-                arr.set(i , arr.get(k));
-                arr.set(k , t);
+                arrayList.set(i , arrayList.get(k));
+                arrayList.set(k , t);
                 k ++;
-
             }
         }
-    }
-
-    public void clearData(){
-        arr.clear();
-        notifyDataSetChanged();
     }
 
     @SuppressLint("InflateParams")
@@ -61,12 +53,12 @@ public class TruyenTranhAdapter extends ArrayAdapter<TruyenTranh> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if(convertView == null){
-            LayoutInflater inflater = (LayoutInflater) ct.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_truyen , null);
         }
 
-        if(arr.size() > 0 ){
-            TruyenTranh truyenTranh = this.arr.get(position);
+        if(arrayList.size() > 0 ){
+            TruyenTranh truyenTranh = this.arrayList.get(position);
             TextView tenTenTruyen =  convertView.findViewById(R.id.txvTenTruyen);
             TextView tenTenChap =  convertView.findViewById(R.id.txvTenChap);
             ImageView imgAnhTruyen = convertView.findViewById(R.id.imgAnhTruyen);
@@ -77,7 +69,7 @@ public class TruyenTranhAdapter extends ArrayAdapter<TruyenTranh> {
 
             String url = "http://" + global.ip_address + truyenTranh.getUrl();
 
-            Glide.with(this.ct).load(url).into(imgAnhTruyen);
+            Glide.with(this.context).load(url).into(imgAnhTruyen);
         }
         return convertView;
     }

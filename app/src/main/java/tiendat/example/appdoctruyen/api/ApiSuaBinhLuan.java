@@ -10,6 +10,7 @@ import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.EditBinhLuan;
 import tiendat.example.appdoctruyen.interfaces.LayBinhLuan;
 
@@ -30,23 +31,20 @@ public class ApiSuaBinhLuan extends AsyncTask<Void , Void , Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        Log.d("TAG1432", "https://mydatabase30619.000webhostapp.com/suaBinhLuan.php" +
-                "?id=" + id +
-                "&&noidung=" + noidung +
-                "&&ngaydang=" + ngaydang);
-        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/suaBinhLuan.php" +
-                "?id=" + id +
-                "&&noidung=" + noidung +
-                "&&ngaydang=" + ngaydang).build();
+        String url = "http://"+ global.ip_address +"/public/api/suaBinhLuan.php?" +
+                "id=" + id +
+                "&&content="+ noidung +
+                "&&date=" + ngaydang;
+
+        Request request = new Request.Builder().url(url).build();
+
         data = null;
         try {
             Response response = client.newCall(request).execute();
             ResponseBody body = response.body();
             data = body.string();
-            Log.d("TAG1432", "doInBackground: sua thanh cong");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("TAG1432", "doInBackground: sua khong thanh cong");
             data = null;
         }
         return null;

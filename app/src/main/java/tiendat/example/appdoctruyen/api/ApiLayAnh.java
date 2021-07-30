@@ -1,5 +1,6 @@
 package tiendat.example.appdoctruyen.api;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.LayAnhVe;
 import tiendat.example.appdoctruyen.interfaces.LayTruyenVe;
 
@@ -31,9 +33,8 @@ public class ApiLayAnh extends AsyncTask<Void , Void , Void> {
     protected Void doInBackground(Void... voids) {
 
         OkHttpClient client = new OkHttpClient();
-        //Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
-        //Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layTruyen.php").build();
-        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layAnh.php?idChap=" + idChap).build();
+        String url = "http://"+ global.ip_address +"/public/api/layAnh.php?idChap=";
+        Request request = new Request.Builder().url(url + idChap).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

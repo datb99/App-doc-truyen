@@ -6,11 +6,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,13 +32,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import tiendat.example.appdoctruyen.Sqlite.Database;
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
+import tiendat.example.appdoctruyen.api.ApiLayLikedListComic;
+import tiendat.example.appdoctruyen.api.ApiLayReadLaterListComic;
 import tiendat.example.appdoctruyen.api.ApiLayTruyen;
+import tiendat.example.appdoctruyen.api.ApiLoadOfflineComic;
 import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.LayTruyenVe;
+import tiendat.example.appdoctruyen.interfaces.LoadOfflineComic;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
 
-public class MainActivity extends AppCompatActivity implements LayTruyenVe {
+public class MainActivity extends AppCompatActivity implements LayTruyenVe , LoadOfflineComic {
 
     GridView gdvDSTruyen;
     TruyenTranhAdapter adapter;
@@ -43,10 +51,8 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
     EditText edtTimKiem;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    ImageView toolbar;
+    ImageView toolbar , nav_imageview;
     TextView nav_textview;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
     }
 
     private void init() {
+        //this.deleteDatabase("Offline.sqlite");
         truyenTranhArrayList = new ArrayList<>();
         //truyenTranhArrayList.add(new TruyenTranh("" , "" , ""));
         adapter = new TruyenTranhAdapter(this , 0 , truyenTranhArrayList);
@@ -73,11 +80,21 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
         toolbar = findViewById(R.id.toolbar);
         View headerview = navigationView.getHeaderView(0);
         nav_textview = headerview.findViewById(R.id.nav_textview);
+        nav_imageview = headerview.findViewById(R.id.nav_imageview);
     }
 
     private void setUp() {
         gdvDSTruyen.setAdapter(adapter);
-        nav_textview.setText("user ID: " + global.user.getId());
+        if (global.user == null){
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("userData" , getApplicationContext().MODE_PRIVATE);
+            String id = sharedPreferences.getString("id", null);
+            nav_textview.setText("user ID: " + id);
+        }else {
+            nav_textview.setText("user ID: " + global.user.getId());
+            nav_imageview.setImageResource(R.drawable.ava_flurry);
+        }
+
+
     }
 
     private void setClick() {
@@ -119,6 +136,40 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
                 item.setChecked(true);
                 drawerLayout.closeDrawers();
+                switch (item.getItemId()){
+                    case R.id.nav_menu_main_screen:
+                        global.isOffline = false;
+                        new ApiLayTruyen(MainActivity.this).execute();
+                        break;
+                    case R.id.nav_menu_like:
+                        global.isOffline = false;
+                        new ApiLayLikedListComic(global.user.getId() , MainActivity.this).execute();
+                        break;
+                    case R.id.nav_menu_curent_chap:
+                        global.isOffline = false;
+
+                        break;
+                    case R.id.nav_menu_read_later:
+                        global.isOffline = false;
+                        new ApiLayReadLaterListComic(global.user.getId() , MainActivity.this).execute();
+                        break;
+                    case R.id.nav_menu_offline:
+                        global.isOffline = true;
+                        new ApiLoadOfflineComic(getApplicationContext() , MainActivity.this ).execute();
+                        break;
+                    case R.id.nav_menu_setting:
+                        global.isOffline = false;
+
+                        break;
+
+                    case R.id.nav_menu_logout:
+                        global.isOffline = false;
+
+                        break;
+
+                }
+
+
                 //code to do after choose menu
                 return true;
             }
@@ -142,15 +193,21 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
         try {
             truyenTranhArrayList.clear();
             JSONArray arr = new JSONArray(data);
-            for(int i = 0 ; i < arr.length() ; i ++){
-                JSONObject o = arr.getJSONObject(i);
-                truyenTranhArrayList.add(new TruyenTranh(o));
+            if (arr.length() > 0){
+                for(int i = 0 ; i < arr.length() ; i ++){
+                    JSONObject o = arr.getJSONObject(i);
+                    truyenTranhArrayList.add(new TruyenTranh(o));
+                    gdvDSTruyen.setAdapter(adapter);
+                }
+                adapter = new TruyenTranhAdapter(this , 0 , truyenTranhArrayList);
+            }else {
+                adapter.clearData();
                 gdvDSTruyen.setAdapter(adapter);
             }
-            adapter = new TruyenTranhAdapter(this , 0 , truyenTranhArrayList);
 
         } catch (JSONException e) {
             e.printStackTrace();
+
         }
 
     }
@@ -162,5 +219,24 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe {
 
     public void update(View view) {
         new ApiLayTruyen(this).execute();
+    }
+
+    @Override
+    public void finishLoadOfflineComic(ArrayList<TruyenTranh> arrayList) {
+        try {
+            truyenTranhArrayList.clear();
+            if (arrayList.size() > 0){
+                for (int i = 0 ; i < arrayList.size() ; i ++){
+                    truyenTranhArrayList.add(arrayList.get(i));
+                    gdvDSTruyen.setAdapter(adapter);
+                }
+                adapter = new TruyenTranhAdapter(this , 0 , truyenTranhArrayList);
+            }else {
+                adapter.clearData();
+                gdvDSTruyen.setAdapter(adapter);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
