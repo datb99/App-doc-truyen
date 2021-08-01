@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,16 +36,22 @@ import java.util.ArrayList;
 
 import tiendat.example.appdoctruyen.Sqlite.Database;
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
+import tiendat.example.appdoctruyen.api.ApiDangNhap;
 import tiendat.example.appdoctruyen.api.ApiLayLikedListComic;
 import tiendat.example.appdoctruyen.api.ApiLayReadLaterListComic;
 import tiendat.example.appdoctruyen.api.ApiLayTruyen;
+import tiendat.example.appdoctruyen.api.ApiLayTruyenTheoTheLoai;
+import tiendat.example.appdoctruyen.api.ApiLayTruyenTuChap;
 import tiendat.example.appdoctruyen.api.ApiLoadOfflineComic;
 import tiendat.example.appdoctruyen.global.global;
+import tiendat.example.appdoctruyen.interfaces.DangNhap;
+import tiendat.example.appdoctruyen.interfaces.LayTruyenTuChap;
 import tiendat.example.appdoctruyen.interfaces.LayTruyenVe;
 import tiendat.example.appdoctruyen.interfaces.LoadOfflineComic;
 import tiendat.example.appdoctruyen.object.TruyenTranh;
+import tiendat.example.appdoctruyen.object.User;
 
-public class MainActivity extends AppCompatActivity implements LayTruyenVe , LoadOfflineComic {
+public class MainActivity extends AppCompatActivity implements LayTruyenVe , LoadOfflineComic , DangNhap , LayTruyenTuChap {
 
     GridView gdvDSTruyen;
     TruyenTranhAdapter adapter;
@@ -62,7 +70,18 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
         anhXa();
         setUp();
         setClick();
+        Log.d("TAG1432", "onCreate: " + global.user.getAvatar());
         new ApiLayTruyen(this).execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("userData" , getApplicationContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("id");
+        editor.remove("password");
+        editor.apply();
     }
 
     private void init() {
@@ -91,10 +110,19 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
             nav_textview.setText("user ID: " + id);
         }else {
             nav_textview.setText("user ID: " + global.user.getId());
-            nav_imageview.setImageResource(R.drawable.ava_flurry);
+           try {
+                   //String url = "http://"+ global.ip_address +"/public/userava/" + global.user.getId() + ".jpg";
+               String url = "http://"+ global.ip_address +"/public/userava/"+ global.user.getId() +".jpg";
+               Glide.with(getApplicationContext())
+                       .load(url)
+                       .diskCacheStrategy(DiskCacheStrategy.NONE)
+                       .into(nav_imageview);
+           } catch (Exception e) {
+               nav_imageview.setImageDrawable(getDrawable(R.drawable.ava_flurry));
+               e.printStackTrace();
+           }
+
         }
-
-
     }
 
     private void setClick() {
@@ -147,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
                         break;
                     case R.id.nav_menu_curent_chap:
                         global.isOffline = false;
-
+                        new ApiDangNhap(MainActivity.this , global.user.getId() , global.user.getPasswword()).execute();
                         break;
                     case R.id.nav_menu_read_later:
                         global.isOffline = false;
@@ -159,18 +187,29 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
                         break;
                     case R.id.nav_menu_setting:
                         global.isOffline = false;
-
+                        Intent intent = new Intent(getApplicationContext() , UpdateInfoActivity.class);
+                        startActivity(intent);
                         break;
 
                     case R.id.nav_menu_logout:
                         global.isOffline = false;
-
+                        onBackPressed();
                         break;
 
+                    case R.id.kindof_kiem_hiep:
+                        laytruyenTheoTheLoai("Kiếm hiệp");
+                        break;
+                    case R.id.kindof_suc_manh_tinh_ban:
+                        laytruyenTheoTheLoai("Sức mạnh tình bạn");
+                        break;
+                    case R.id.kindof_thieu_nhi:
+                        laytruyenTheoTheLoai("Thiếu nhi");
+                        break;
+                    case R.id.kindof_uynh_lon:
+                        laytruyenTheoTheLoai("Uýnh lộn");
+                        break;
                 }
 
-
-                //code to do after choose menu
                 return true;
             }
         });
@@ -186,6 +225,26 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
     @Override
     public void batDau() {
         Toast.makeText(this , "Đang lấy về" , Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void ketThucLayUser(String data) {
+        User user = null;
+        try {
+            user = null;
+            JSONArray arr = new JSONArray(data);
+            for(int i = 0 ; i < arr.length() ; i ++){
+                JSONObject o = arr.getJSONObject(i);
+                user = new User(o);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (user.getCurrentReadingChap() != null){
+            new ApiLayTruyenTuChap(this , user.getCurrentReadingChap()).execute();
+        }
+
+
     }
 
     @Override
@@ -238,5 +297,24 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void ketThucLayTruyenTuChap(TruyenTranh truyenTranh) {
+        global.truyenTranh = truyenTranh;
+        Bundle b = new Bundle();
+        b.putSerializable("Truyen" , truyenTranh);
+        Intent intent = new Intent(MainActivity.this , ChapActivity.class);
+        intent.putExtra("data" , b);
+        startActivity(intent);
+    }
+
+    public void laytruyenTheoTheLoai(String kindof){
+        new ApiLayTruyenTheoTheLoai(this , kindof).execute();
     }
 }

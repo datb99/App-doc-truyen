@@ -1,12 +1,17 @@
 package tiendat.example.appdoctruyen;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -15,17 +20,21 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import tiendat.example.appdoctruyen.api.ApiDangKy;
 import tiendat.example.appdoctruyen.api.ApiDangNhap;
+import tiendat.example.appdoctruyen.api.ApiUploadAva;
 import tiendat.example.appdoctruyen.interfaces.DangKy;
+import tiendat.example.appdoctruyen.interfaces.uploadAva;
 
-public class RegisActivity extends AppCompatActivity implements DangKy {
+public class RegisActivity extends AppCompatActivity implements DangKy , uploadAva {
 
+    private final int PICK_IMAGE = 100;
     EditText id , password , number , email , address;
-    String base64Avatar = null;
     ImageView avatar;
     Button regis;
+    Uri imageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,31 +53,53 @@ public class RegisActivity extends AppCompatActivity implements DangKy {
 
         avatar.setImageBitmap(resizeBitmap(icon));
 
-        //base64Avatar = encodeBase64(resizeBitmap(icon));
 
         regis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pushId = id.getText().toString();
-                String pushPassword = password.getText().toString();
-                String pushNumber = number.getText().toString();
-                String pushEmail = email.getText().toString();
-                String pushAddress = address.getText().toString();
 
-                if(id.getText().toString() != "" && password.getText().toString() != ""){
-                    new ApiDangKy(RegisActivity.this ,
-                            pushId ,
-                            pushPassword ,
-                            pushNumber ,
-                            pushEmail ,
-                            pushAddress ,
-                            base64Avatar).execute();
+                if (imageUri != null){
+                    new ApiUploadAva(RegisActivity.this ,getRealPathFromURI(getApplicationContext() , imageUri) , id.getText().toString()).execute();
                 }else {
-                    Toast.makeText(RegisActivity.this , "Không được để trống dữ liệu" , Toast.LENGTH_SHORT).show();
+                    String pushId = id.getText().toString();
+                    String pushPassword = password.getText().toString();
+                    String pushNumber = number.getText().toString();
+                    String pushEmail = email.getText().toString();
+                    String pushAddress = address.getText().toString();
+
+                    if(id.getText().toString() != "" && password.getText().toString() != ""){
+                        new ApiDangKy(RegisActivity.this ,
+                                pushId ,
+                                pushPassword ,
+                                pushNumber ,
+                                pushEmail ,
+                                pushAddress ,
+                                "").execute();
+                    }else {
+                        Toast.makeText(RegisActivity.this , "Không được để trống dữ liệu" , Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, PICK_IMAGE);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && requestCode == PICK_IMAGE && data != null){
+            imageUri = data.getData();
+            avatar.setImageURI(imageUri);
+        }
     }
 
     @Override
@@ -93,11 +124,40 @@ public class RegisActivity extends AppCompatActivity implements DangKy {
         return des;
     }
 
-    public String encodeBase64(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream .toByteArray();
-        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        return encoded;
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    @Override
+    public void finishUploadAva() {
+        String pushId = id.getText().toString();
+        String pushPassword = password.getText().toString();
+        String pushNumber = number.getText().toString();
+        String pushEmail = email.getText().toString();
+        String pushAddress = address.getText().toString();
+        String img = id.getText().toString() + ".jpg";
+
+        if(id.getText().toString() != "" && password.getText().toString() != ""){
+            new ApiDangKy(RegisActivity.this ,
+                    pushId ,
+                    pushPassword ,
+                    pushNumber ,
+                    pushEmail ,
+                    pushAddress ,
+                    img).execute();
+        }else {
+            Toast.makeText(RegisActivity.this , "Không được để trống dữ liệu" , Toast.LENGTH_SHORT).show();
+        }
     }
 }

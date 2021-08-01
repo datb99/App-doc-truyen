@@ -54,8 +54,7 @@ public class ImgAdapter extends RecyclerView.Adapter<ImgAdapter.ViewHolder> {
         String url  = "http://" + global.ip_address + arrImg.get(position);
         Glide.with(context)
                 .load(url)
-//                .skipMemoryCache(true)
-//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.imgView);
     }
 

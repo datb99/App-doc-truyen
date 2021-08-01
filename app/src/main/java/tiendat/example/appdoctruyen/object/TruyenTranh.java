@@ -37,14 +37,7 @@ public class TruyenTranh implements Serializable {
             this.likedCount     = 0;
         }
 
-
     }
-
-    //    public TruyenTranh(String tenTruyen, String tenChap, String linkAnh) {
-//        this.tenTruyen = tenTruyen;
-//        this.tenChap = tenChap;
-//        this.LinkAnh = linkAnh;
-//    }
 
 
     public String getId() {

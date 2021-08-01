@@ -48,7 +48,6 @@ public class ApiLayBinhLuan extends AsyncTask<Void , Void , Void> {
             e.printStackTrace();
             data = null;
         }
-
         return null;
     }
 

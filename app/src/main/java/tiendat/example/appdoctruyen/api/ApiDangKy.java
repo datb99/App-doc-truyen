@@ -10,6 +10,7 @@ import com.squareup.okhttp.ResponseBody;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.DangKy;
 import tiendat.example.appdoctruyen.interfaces.DangNhap;
 
@@ -36,15 +37,15 @@ public class ApiDangKy extends AsyncTask<Void , Void , Void> {
         client.setConnectTimeout(30 , TimeUnit.SECONDS);
         client.setWriteTimeout(1 , TimeUnit.MINUTES);
 
-        Request request = new Request
-                .Builder()
-                .url("https://mydatabase30619.000webhostapp.com/DangKy.php?" +
-                        "id=" + id +
-                        "&&password=" + password +
-                        "&&number=" + number +
-                        "&&email=" + email +
-                        "&&address=" + address+
-                        "&&avatar=" + avatar).build();
+        String url = "http://"+ global.ip_address +"/public/api/dangKy.php?" +
+                "id="+ id +"" +
+                "&&password="+ password +"" +
+                "&&number="+ number +"" +
+                "&&email="+ email +"" +
+                "&&address="+ address +"" +
+                "&&avatar=" + avatar;
+
+        Request request = new Request.Builder().url(url).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

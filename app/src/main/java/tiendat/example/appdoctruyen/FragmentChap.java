@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import tiendat.example.appdoctruyen.adapter.ChapTruyenAdapter;
 import tiendat.example.appdoctruyen.api.ApiSaveChap;
+import tiendat.example.appdoctruyen.api.ApiUpdateCurrentChap;
 import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.object.ChapTruyen;
 
@@ -91,6 +92,9 @@ public class FragmentChap extends Fragment {
                 Intent intent = new Intent(getContext() , DocTruyenActivity.class);
                 intent.putExtra("data" , b);
                 startActivity(intent);
+                if (!global.isOffline){
+                    new ApiUpdateCurrentChap(global.user.getId() , arrChap.get(position).getId()).execute();
+                }
             }
         });
 

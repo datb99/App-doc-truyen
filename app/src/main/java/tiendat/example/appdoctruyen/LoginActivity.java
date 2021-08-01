@@ -1,10 +1,14 @@
 package tiendat.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +30,9 @@ import tiendat.example.appdoctruyen.object.TruyenTranh;
 import tiendat.example.appdoctruyen.object.User;
 
 public class LoginActivity extends AppCompatActivity implements DangNhap {
+    private final int INTERNET_PERMISSION = 1;
+    private final int READ_PERMISSION = 3;
+    private final int WRITE_PERMISSION = 2;
     EditText id, password;
     Button login , regis;
     User user;
@@ -36,6 +43,10 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        checkPermission(Manifest.permission.INTERNET , INTERNET_PERMISSION);
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE , WRITE_PERMISSION);
+        checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE , READ_PERMISSION);
 
         id = findViewById(R.id.txtID);
         password = findViewById(R.id.txtPassword);
@@ -76,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
     }
 
     @Override
-    public void ketThuc(String data) {
+    public void ketThucLayUser(String data) {
         try {
             user = null;
             JSONArray arr = new JSONArray(data);
@@ -109,7 +120,6 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
         }else {
             Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu hoặc lỗi kết nối" , Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void checkLogin() {
@@ -118,6 +128,16 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
             String id = sharedPreferences.getString("id", null);
             String password = sharedPreferences.getString("password", null);
             new ApiDangNhap(this, id, password).execute();
+        }
+    }
+
+    public void checkPermission(String permission, int requestCode)
+    {
+        // Checking if permission is not granted
+        if (ContextCompat.checkSelfPermission(LoginActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(LoginActivity.this, new String[] { permission }, requestCode);
+        }else {
+            Log.d("TAG1432", "checkPermission: permission already ok");
         }
     }
 

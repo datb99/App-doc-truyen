@@ -2,6 +2,6 @@ package tiendat.example.appdoctruyen.interfaces;
 
 public interface DangNhap {
     void batDau();
-    void ketThuc(String data);
+    void ketThucLayUser(String data);
     void biLoi();
 }
