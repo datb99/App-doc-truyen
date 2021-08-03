@@ -1,5 +1,6 @@
 package tiendat.example.appdoctruyen;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.view.ViewCompat;
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,7 +45,10 @@ import java.util.ArrayList;
 import tiendat.example.appdoctruyen.adapter.ChapTruyenAdapter;
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
 import tiendat.example.appdoctruyen.api.ApiChapTruyen;
+import tiendat.example.appdoctruyen.api.ApiDeleteOfflineChap;
 import tiendat.example.appdoctruyen.api.ApiLayBinhLuan;
+import tiendat.example.appdoctruyen.api.ApiSaveChap;
+import tiendat.example.appdoctruyen.api.ApiUpdateCurrentChap;
 import tiendat.example.appdoctruyen.api.ApiUpdateLikedList;
 import tiendat.example.appdoctruyen.api.ApiUpdateReadLaterList;
 import tiendat.example.appdoctruyen.global.global;
@@ -90,6 +96,34 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
     private void init(){
         Bundle b = getIntent().getBundleExtra("data");
         truyenTranh = (TruyenTranh) b.getSerializable("Truyen");
+        String curentChap = b.getString("check current chap");
+        Log.d("TAG1432", "init: " + curentChap);
+        for (int i = 0 ; i < arrChap.size() ; i ++){
+            Log.d("TAG1432", "init: " + arrChap.get(i).getId());
+        }
+        if (curentChap != null){
+            ChapTruyen chapTruyen = null;
+            for (int i = 0 ; i < arrChap.size() ; i ++){
+                Log.d("TAG1432", "init: " + arrChap.get(i).getId());
+                if (arrChap.get(i).getId().equals(curentChap)){
+                    chapTruyen = arrChap.get(i);
+                }
+            }
+
+            final String[] option = {"Đọc tiếp" , "Huỷ"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item , option);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            //String title = "bạn đang đọc dở chap " + chapTruyen.getTenChap();
+            builder.setTitle("select option");
+            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            final AlertDialog a = builder.create();
+            a.show();
+        }
     }
 
     private void anhxa(){
@@ -187,10 +221,47 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
                 JSONObject o = arr.getJSONObject(i);
                 arrChap.add(new ChapTruyen(o));
             }
-            chapter = new FragmentChap(arrChap);
+            chapter = new FragmentChap(arrChap , this);
             sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(sectionsPagerAdapter);
             tabLayout.setupWithViewPager(viewPager);
+
+            Bundle b = getIntent().getBundleExtra("data");
+            String curentChap = b.getString("check current chap");
+            if (curentChap != null){
+                ChapTruyen chapTruyen = null;
+                for (int i = 0 ; i < arrChap.size() ; i ++){
+                    if (arrChap.get(i).getId().equals(curentChap)){
+                        chapTruyen = arrChap.get(i);
+                    }
+                }
+                final String[] option = {"Đọc tiếp" , "Huỷ"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item , option);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                String title = "bạn đang đọc dở chap " + chapTruyen.getTenChap();
+                builder.setTitle(title);
+                ChapTruyen finalChapTruyen = chapTruyen;
+                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0){
+                            Bundle b = new Bundle();
+                            b.putString("idChap" , finalChapTruyen.getId());
+                            Intent intent = new Intent(getApplicationContext() , DocTruyenActivity.class);
+                            intent.putExtra("data" , b);
+                            startActivity(intent);
+                            if (!global.isOffline){
+                                new ApiUpdateCurrentChap(global.user.getId() , finalChapTruyen.getId()).execute();
+                            }
+                        }else {
+
+                        }
+
+                    }
+                });
+                final AlertDialog a = builder.create();
+                a.show();
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -201,10 +272,15 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
     public void ketThucOffline(ArrayList<ChapTruyen> arrayList) {
         arrChap.clear();
         arrChap = new ArrayList<>(arrayList);
-        chapter = new FragmentChap(arrChap);
+        chapter = new FragmentChap(arrChap , this);
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(sectionsPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public void ketThucDeleteChapOffline() {
+        new ApiChapTruyen(this, truyenTranh.getId() , getApplicationContext()).execute();
     }
 
     @Override

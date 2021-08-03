@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +26,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import tiendat.example.appdoctruyen.adapter.ChapTruyenAdapter;
+import tiendat.example.appdoctruyen.api.ApiDeleteOfflineChap;
 import tiendat.example.appdoctruyen.api.ApiSaveChap;
 import tiendat.example.appdoctruyen.api.ApiUpdateCurrentChap;
 import tiendat.example.appdoctruyen.global.global;
+import tiendat.example.appdoctruyen.interfaces.LayChapVe;
 import tiendat.example.appdoctruyen.object.ChapTruyen;
 
 /**
@@ -40,6 +43,7 @@ public class FragmentChap extends Fragment {
     ListView listView;
     ArrayList<ChapTruyen> arrChap = new ArrayList<>();
     ChapTruyenAdapter chapTruyenAdapter;
+    LayChapVe layChapVe;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,8 +58,9 @@ public class FragmentChap extends Fragment {
         // Required empty public constructor
     }
 
-    public FragmentChap(ArrayList<ChapTruyen> arrChap) {
+    public FragmentChap(ArrayList<ChapTruyen> arrChap , LayChapVe layChapVe) {
         this.arrChap = arrChap;
+        this.layChapVe = layChapVe;
     }
 
 
@@ -101,7 +106,12 @@ public class FragmentChap extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final String[] option = {"thêm vào đọc sau"};
+                final String[] option;
+                if (global.isOffline){
+                    option = new String[]{"xoá khỏi danh sách offline"};
+                }else {
+                    option = new String[]{"thêm vào đọc sau"};
+                }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext() , android.R.layout.select_dialog_item , option);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("tuỳ chọn");
@@ -109,8 +119,13 @@ public class FragmentChap extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //do this after click
-                        new ApiSaveChap(getContext() , arrChap.get(position) , global.truyenTranh).execute();
-                        Toast.makeText(getContext() , option[which] + " selected" , Toast.LENGTH_SHORT).show();
+                        if (global.isOffline){
+                            new ApiDeleteOfflineChap(layChapVe , getContext() , arrChap.get(position).getId() , global.truyenTranh.getId()).execute();
+                        }else {
+                            new ApiSaveChap(getContext() , arrChap.get(position) , global.truyenTranh).execute();
+                            Toast.makeText(getContext() , option[which] + " selected" , Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
                 final AlertDialog a = builder.create();
@@ -118,5 +133,8 @@ public class FragmentChap extends Fragment {
                 return true;
             }
         });
+
     }
+
+
 }

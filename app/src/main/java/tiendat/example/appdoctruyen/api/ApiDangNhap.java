@@ -25,8 +25,6 @@ public class ApiDangNhap extends AsyncTask<Void , Void , Void> {
         this.password = password;
     }
 
-
-
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();

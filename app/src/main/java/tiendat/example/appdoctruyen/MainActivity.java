@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
             for(int i = 0 ; i < arr.length() ; i ++){
                 JSONObject o = arr.getJSONObject(i);
                 user = new User(o);
+                global.user = user;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -309,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
         global.truyenTranh = truyenTranh;
         Bundle b = new Bundle();
         b.putSerializable("Truyen" , truyenTranh);
+        b.putString("check current chap" , global.user.getCurrentReadingChap());
         Intent intent = new Intent(MainActivity.this , ChapActivity.class);
         intent.putExtra("data" , b);
         startActivity(intent);

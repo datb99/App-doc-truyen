@@ -8,5 +8,6 @@ public interface LayChapVe {
     void batDau();
     void ketThuc(String data);
     void ketThucOffline(ArrayList<ChapTruyen> arrayList);
+    void ketThucDeleteChapOffline();
     void biLoi();
 }
