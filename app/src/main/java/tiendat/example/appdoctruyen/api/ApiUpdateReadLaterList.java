@@ -1,6 +1,7 @@
 package tiendat.example.appdoctruyen.api;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,11 +16,11 @@ import tiendat.example.appdoctruyen.interfaces.UpdateReadLaterList;
 public class ApiUpdateReadLaterList extends AsyncTask<Void , Void , Void> {
 
     ArrayList<String> arrayList;
-    String id , data;
+    String email , data;
     UpdateReadLaterList updateReadLaterList;
 
-    public ApiUpdateReadLaterList (ArrayList<String> arrayList , UpdateReadLaterList updateReadLaterList , String id){
-        this.id = id;
+    public ApiUpdateReadLaterList (ArrayList<String> arrayList ,String email , UpdateReadLaterList updateReadLaterList){
+        this.email = email;
         this.arrayList = arrayList;
         this.updateReadLaterList = updateReadLaterList;
     }
@@ -32,9 +33,12 @@ public class ApiUpdateReadLaterList extends AsyncTask<Void , Void , Void> {
             newList = newList + arrayList.get(i) + "/";
         }
 
+        Log.d("TAG1432", "doInBackground: " + newList);
+
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/updateReadLaterList.php?" +
-                "id="+ id +
+
+        String url = "http://"+ global.ip_address +"/fashi/api/updateReadLaterList.php" +
+                "?email=" + email +
                 "&&readLaterList=" + newList;
 
         Request request = new Request.Builder().url(url).build();

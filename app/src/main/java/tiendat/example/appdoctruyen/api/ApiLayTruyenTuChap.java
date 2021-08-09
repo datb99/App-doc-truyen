@@ -30,7 +30,8 @@ public class ApiLayTruyenTuChap extends AsyncTask<Void, Void , Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/layCurrentChap.php?idChap=" + idChap;
+//        String url = "http://"+ global.ip_address +"/public/api/layCurrentChap.php?idChap=" + idChap;
+        String url = "http://"+ global.ip_address +"/fashi/api/layCurrentChap.php?idChap=" + idChap;
         Request request = new Request.Builder().url(url).build();
         data = null;
         try {

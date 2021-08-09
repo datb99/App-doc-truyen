@@ -40,5 +40,6 @@ public class ApiDeleteAva extends AsyncTask<Void , Void , Void> {
     protected void onPostExecute(Void unused) {
         super.onPostExecute(unused);
         updateInfo.finishDeleteAva();
+
     }
 }

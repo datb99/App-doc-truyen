@@ -1,10 +1,12 @@
 package tiendat.example.appdoctruyen;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -17,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,12 +41,14 @@ import java.util.ArrayList;
 import tiendat.example.appdoctruyen.Sqlite.Database;
 import tiendat.example.appdoctruyen.adapter.TruyenTranhAdapter;
 import tiendat.example.appdoctruyen.api.ApiDangNhap;
+import tiendat.example.appdoctruyen.api.ApiDeleteOfflineChap;
 import tiendat.example.appdoctruyen.api.ApiLayLikedListComic;
 import tiendat.example.appdoctruyen.api.ApiLayReadLaterListComic;
 import tiendat.example.appdoctruyen.api.ApiLayTruyen;
 import tiendat.example.appdoctruyen.api.ApiLayTruyenTheoTheLoai;
 import tiendat.example.appdoctruyen.api.ApiLayTruyenTuChap;
 import tiendat.example.appdoctruyen.api.ApiLoadOfflineComic;
+import tiendat.example.appdoctruyen.api.ApiSaveChap;
 import tiendat.example.appdoctruyen.global.global;
 import tiendat.example.appdoctruyen.interfaces.DangNhap;
 import tiendat.example.appdoctruyen.interfaces.LayTruyenTuChap;
@@ -77,11 +83,6 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("userData" , getApplicationContext().MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("id");
-        editor.remove("password");
-        editor.apply();
     }
 
     private void init() {
@@ -111,8 +112,13 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
         }else {
             nav_textview.setText("user ID: " + global.user.getId());
            try {
-                   //String url = "http://"+ global.ip_address +"/public/userava/" + global.user.getId() + ".jpg";
-               String url = "http://"+ global.ip_address +"/public/userava/"+ global.user.getId() +".jpg";
+               String url = "http://"+ global.ip_address +"/fashi/userava/"+ global.user.getId() +".jpg";
+//               Glide.with(getApplicationContext())
+//                       .load(url)
+//                       .signature(new ObjectKey())
+//                       .into(nav_imageview);
+
+
                Glide.with(getApplicationContext())
                        .load(url)
                        .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -171,15 +177,15 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
                         break;
                     case R.id.nav_menu_like:
                         global.isOffline = false;
-                        new ApiLayLikedListComic(global.user.getId() , MainActivity.this).execute();
+                        new ApiLayLikedListComic(MainActivity.this , global.user.getEmail()).execute();
                         break;
                     case R.id.nav_menu_curent_chap:
                         global.isOffline = false;
-                        new ApiDangNhap(MainActivity.this , global.user.getId() , global.user.getPasswword()).execute();
+                        new ApiDangNhap(MainActivity.this , global.user.getEmail() , global.user.getPasswword()).execute();
                         break;
                     case R.id.nav_menu_read_later:
                         global.isOffline = false;
-                        new ApiLayReadLaterListComic(global.user.getId() , MainActivity.this).execute();
+                        new ApiLayReadLaterListComic(global.user.getEmail() , MainActivity.this).execute();
                         break;
                     case R.id.nav_menu_offline:
                         global.isOffline = true;
@@ -302,7 +308,26 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Thông báo")
+                .setMessage("Bạn có thực sự muốn đăng xuất ???")
+                .setPositiveButton("đăng xuất", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("userData" , getApplicationContext().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.remove("id");
+                        editor.remove("password");
+                        editor.apply();
+                        Intent intent = new Intent(MainActivity.this , LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("huỷ", null)
+                .show();
     }
 
     @Override
@@ -318,5 +343,21 @@ public class MainActivity extends AppCompatActivity implements LayTruyenVe , Loa
 
     public void laytruyenTheoTheLoai(String kindof){
         new ApiLayTruyenTheoTheLoai(this , kindof).execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            //String url = "http://"+ global.ip_address +"/public/userava/" + global.user.getId() + ".jpg";
+            String url = "http://"+ global.ip_address +"/fashi/userava/"+ global.user.getId() +".jpg";
+            Glide.with(getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(nav_imageview);
+        } catch (Exception e) {
+            nav_imageview.setImageDrawable(getDrawable(R.drawable.ava_flurry));
+            e.printStackTrace();
+        }
     }
 }

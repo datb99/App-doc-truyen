@@ -27,7 +27,9 @@ public class ApiLayTruyenTheoTheLoai extends AsyncTask<Void , Void , Void> {
 
         OkHttpClient client = new OkHttpClient();
 
-        String url = "http://"+ global.ip_address +"/public/api/layTruyenTheoType.php?kindOfComic=" + type;
+//        String url = "http://"+ global.ip_address +"/public/api/layTruyenTheoType.php?kindOfComic=" + type;
+
+        String url = "http://"+ global.ip_address +"/fashi/api/layTruyenTheoType.php?kindOfComic=" + type;
 
         Request request = new Request.Builder().url(url).build();
         data = null;

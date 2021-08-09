@@ -22,12 +22,13 @@ public class ApiDangKy extends AsyncTask<Void , Void , Void> {
 
     public ApiDangKy(DangKy dangKy , String id , String password , String number , String email , String address , String avatar){
         this.dangKy = dangKy;
-        this.id = id;
         this.password = password;
         this.number = number;
         this.email = email;
         this.address = address;
         this.avatar = avatar;
+        String[] parts = email.split("@");
+        this.id = parts[0];
     }
 
 
@@ -37,12 +38,12 @@ public class ApiDangKy extends AsyncTask<Void , Void , Void> {
         client.setConnectTimeout(30 , TimeUnit.SECONDS);
         client.setWriteTimeout(1 , TimeUnit.MINUTES);
 
-        String url = "http://"+ global.ip_address +"/public/api/dangKy.php?" +
-                "id="+ id +"" +
-                "&&password="+ password +"" +
-                "&&number="+ number +"" +
-                "&&email="+ email +"" +
-                "&&address="+ address +"" +
+        String url = "http://"+ global.ip_address + "/fashi/api/dangKy.php" +
+                "?id=" + id +
+                "&&password=" + password +
+                "&&number=" + number +
+                "&&email=" + email +
+                "&&address=" + address +
                 "&&avatar=" + avatar;
 
         Request request = new Request.Builder().url(url).build();

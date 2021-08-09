@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +52,10 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
 
         id = findViewById(R.id.txtID);
         password = findViewById(R.id.txtPassword);
+        password.setInputType(InputType.TYPE_CLASS_TEXT);
+        //password.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+        //password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         login = findViewById(R.id.btnLogin);
         regis = findViewById(R.id.btnRegis);
 
@@ -75,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this , RegisActivity.class);
                 startActivity(intent);
+                LoginActivity.this.finish();
             }
         });
 
@@ -101,12 +108,13 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
         if(user != null){
             global.user = user;
             Intent intent = new Intent(this , MainActivity.class);
-
-            editor.putString("id" , user.getId());
+            //editor.putString("id" , user.getId());
+            editor.putString("id" , user.getEmail());
             editor.putString("password" , user.getPasswword());
             editor.apply();
 
             startActivity(intent);
+            LoginActivity.this.finish();
         }else {
             Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu hoặc lỗi kết nối" , Toast.LENGTH_SHORT).show();
         }
@@ -117,6 +125,7 @@ public class LoginActivity extends AppCompatActivity implements DangNhap {
         if (sharedPreferences.contains("id")){
             Intent intent = new Intent(this , MainActivity.class);
             startActivity(intent);
+            LoginActivity.this.finish();
         }else {
             Toast.makeText(this , "Sai tên đăng nhập hoặc mật khẩu hoặc lỗi kết nối" , Toast.LENGTH_SHORT).show();
         }

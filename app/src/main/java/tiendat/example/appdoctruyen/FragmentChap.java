@@ -98,7 +98,7 @@ public class FragmentChap extends Fragment {
                 intent.putExtra("data" , b);
                 startActivity(intent);
                 if (!global.isOffline){
-                    new ApiUpdateCurrentChap(global.user.getId() , arrChap.get(position).getId()).execute();
+                    new ApiUpdateCurrentChap(global.user.getEmail() , arrChap.get(position).getId()).execute();
                 }
             }
         });

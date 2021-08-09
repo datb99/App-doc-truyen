@@ -30,19 +30,19 @@ public class ApiBinhLuan extends AsyncTask<Void , Void , Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/themBinhLuan.php?" +
-                "content=" + noidung +
-                "&&date="+ ngaydang +
-                "&&idUser="+ iduser +
-                "&&idComic=" + idtruyen;
+//        String url = "http://"+ global.ip_address +"/public/api/themBinhLuan.php?" +
+//                "content=" + noidung +
+//                "&&date="+ ngaydang +
+//                "&&idUser="+ iduser +
+//                "&&idComic=" + idtruyen;
+        String url = "http://"+ global.ip_address +"/fashi/api/themBinhLuan.php" +
+                "?idUser=" + iduser +
+                "&&idComic=" + idtruyen +
+                "&&content=" + noidung +
+                "&&date=" + ngaydang;
 
         Request request = new Request.Builder().url(url).build();
 
-//        Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/themBinhLuan.php" +
-//                "?noidung=" + noidung +
-//                "&&ngaydang=" + ngaydang +
-//                "&&userid=" + iduser +
-//                "&&truyenid=" + idtruyen).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();

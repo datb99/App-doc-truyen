@@ -1,6 +1,7 @@
 package tiendat.example.appdoctruyen.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,8 @@ public class ImgAdapter extends RecyclerView.Adapter<ImgAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ImgAdapter.ViewHolder holder, int position) {
-        String url  = "http://" + global.ip_address + arrImg.get(position);
+        String url  = arrImg.get(position);
+        Log.d("TAG1432", "onBindViewHolder: " + url);
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

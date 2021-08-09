@@ -75,7 +75,7 @@ public class TruyenTranhAdapter extends ArrayAdapter<TruyenTranh> {
 
             tenTenChap.setText("Lượt thích : " + truyenTranh.getLikedCount());
 
-            String url = "http://" + global.ip_address + truyenTranh.getUrl();
+            String url = truyenTranh.getUrl();
 
             Glide.with(this.ct).load(url).into(imgAnhTruyen);
         }

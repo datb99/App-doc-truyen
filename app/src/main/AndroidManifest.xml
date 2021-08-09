@@ -16,7 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppDocTruyen">
-        <activity android:name=".UpdateInfoActivity"></activity>
+        <activity android:name=".WaitLoggingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity android:name=".UpdateInfoActivity" />
 
         <service
             android:name=".service.getConnection"
@@ -25,11 +33,7 @@
 
         <activity android:name=".RegisActivity" />
         <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".DocTruyenActivity" />
         <activity android:name=".ChapActivity" />

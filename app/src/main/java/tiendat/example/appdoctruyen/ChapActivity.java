@@ -97,23 +97,16 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
         Bundle b = getIntent().getBundleExtra("data");
         truyenTranh = (TruyenTranh) b.getSerializable("Truyen");
         String curentChap = b.getString("check current chap");
-        Log.d("TAG1432", "init: " + curentChap);
-        for (int i = 0 ; i < arrChap.size() ; i ++){
-            Log.d("TAG1432", "init: " + arrChap.get(i).getId());
-        }
         if (curentChap != null){
             ChapTruyen chapTruyen = null;
             for (int i = 0 ; i < arrChap.size() ; i ++){
-                Log.d("TAG1432", "init: " + arrChap.get(i).getId());
                 if (arrChap.get(i).getId().equals(curentChap)){
                     chapTruyen = arrChap.get(i);
                 }
             }
-
             final String[] option = {"Đọc tiếp" , "Huỷ"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item , option);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            //String title = "bạn đang đọc dở chap " + chapTruyen.getTenChap();
             builder.setTitle("select option");
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 @Override
@@ -159,13 +152,9 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
                     break;
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     private void setclick(){
@@ -178,13 +167,13 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
                     global.user.getArrayComicLiked().remove(posLiked);
                 }else {
                     global.truyenTranh.setLikedCount(global.truyenTranh.getLikedCount() + 1);
-                    global.user.getArrayComicLiked().add(global.truyenTranh.getId());
+                    global.user.getArrayComicLiked().add(posLiked , global.truyenTranh.getId() );
                 }
                 new ApiUpdateLikedList(ChapActivity.this
                         , global.user.getArrayComicLiked()
-                        , global.user.getId()
                         , global.truyenTranh.getId()
-                        , global.truyenTranh.getLikedCount())
+                        , global.truyenTranh.getLikedCount()
+                        , global.user.getEmail())
                         .execute();
             }
         });
@@ -195,11 +184,11 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
                 if(isReadLater){
                     global.user.getArrayReadLater().remove(posRead);
                 }else {
-                    global.user.getArrayReadLater().add(global.truyenTranh.getId());
+                    global.user.getArrayReadLater().add(posRead , global.truyenTranh.getId());
                 }
                 new ApiUpdateReadLaterList(global.user.getArrayReadLater()
-                        ,ChapActivity.this
-                        , global.user.getId())
+                        ,global.user.getEmail()
+                        ,ChapActivity.this)
                         .execute();
             }
         });
@@ -247,11 +236,12 @@ public class  ChapActivity extends AppCompatActivity implements LayChapVe , Upda
                         if (which == 0){
                             Bundle b = new Bundle();
                             b.putString("idChap" , finalChapTruyen.getId());
+
                             Intent intent = new Intent(getApplicationContext() , DocTruyenActivity.class);
                             intent.putExtra("data" , b);
                             startActivity(intent);
                             if (!global.isOffline){
-                                new ApiUpdateCurrentChap(global.user.getId() , finalChapTruyen.getId()).execute();
+                                new ApiUpdateCurrentChap(global.user.getEmail() , finalChapTruyen.getId()).execute();
                             }
                         }else {
 

@@ -31,7 +31,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:src="@drawable/three_line"
+                android:src="@drawable/three_line_new"
                 app:tint="@color/white" />
 
             <ImageView
@@ -41,8 +41,9 @@
                 android:layout_marginRight="2dp"
                 android:onClick="update"
                 android:padding="8dp"
-                android:src="@drawable/update"
-                app:tint="@color/white" />
+                android:src="@drawable/update_new"
+                app:tint="@color/white"
+                tools:ignore="ContentDescription,RtlHardcoded,UsingOnClickInXml" />
 
             <EditText
                 android:id="@+id/edtTimKiem"
@@ -57,7 +58,8 @@
                 android:hint="Nhập tên truyện"
                 android:textColor="#fff"
                 android:textColorHint="#B3ADAD"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:ignore="HardcodedText" />
 
         </RelativeLayout>
 

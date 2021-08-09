@@ -36,7 +36,8 @@ public class ApiLayBinhLuan extends AsyncTask<Void , Void , Void> {
         //Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layTruyen.php").build();
         //Request request = new Request.Builder().url("https://60ae66cf5b8c300017dea6f3.mockapi.io/api/v1/TruyenTranh").build();
         //Request request = new Request.Builder().url("https://mydatabase30619.000webhostapp.com/layBinhLuan.php?id=" + idTruyen).build();
-        String url = "http://"+ global.ip_address +"/public/api/layBinhLuan.php?id=" + idTruyen;
+        //String url = "http://"+ global.ip_address +"/public/api/layBinhLuan.php?id=" + idTruyen;
+        String url = "http://"+ global.ip_address +"/fashi/api/layBinhLuan.php?id=" + idTruyen;
         Request request = new Request.Builder().url(url).build();
         data = null;
         try {

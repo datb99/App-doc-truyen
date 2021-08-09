@@ -16,12 +16,13 @@ public class ApiUpdateInfo extends AsyncTask<Void , Void , Void> {
     updateInfo updateInfo;
 
     public ApiUpdateInfo(updateInfo updateInfo ,String id, String password , String number , String email , String address){
-        this.id = id;
         this.password = password;
         this.number = number;
         this.email = email;
         this.address = address;
         this.updateInfo = updateInfo;
+        String[] parts = email.split("@");
+        this.id = parts[0];
     }
 
 
@@ -29,12 +30,14 @@ public class ApiUpdateInfo extends AsyncTask<Void , Void , Void> {
     protected Void doInBackground(Void... voids) {
 
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address+"/public/api/updateInfo.php" +
-                "?id="+ id +
-                "&&password="+ password +
-                "&&number="+ number +
-                "&&email="+ email +
-                "&&address="+ address;
+
+
+        String url = "http://"+ global.ip_address +"/fashi/api/updateInfo.php" +
+                "?id=" + id +
+                "&&password=" + password +
+                "&&number=" + number +
+                "&&email=" + email +
+                "&&address=" + address;
 
         Request request = new Request.Builder().url(url).build();
 

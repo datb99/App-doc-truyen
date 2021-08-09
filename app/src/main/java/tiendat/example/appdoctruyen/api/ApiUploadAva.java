@@ -49,7 +49,7 @@ public class ApiUploadAva extends AsyncTask<Void, Void, String> {
                 .build();
 
         Request request = new Request.Builder()
-                .url("http://"+ global.ip_address +"/public/uploadAva.php")
+                .url("http://"+ global.ip_address +"/fashi/uploadAva.php")
                 .post(requestBody)
                 .build();
 

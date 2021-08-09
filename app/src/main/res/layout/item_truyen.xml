@@ -12,7 +12,7 @@
 
         <ImageView
             android:id="@+id/imgAnhTruyen"
-            android:src="@drawable/a"
+            android:src="@drawable/a_new"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

@@ -1,6 +1,7 @@
 package tiendat.example.appdoctruyen.api;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -22,11 +23,10 @@ public class ApiUpdateCurrentChap extends AsyncTask<Void , Void , Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/updateCurrentChap.php" +
-                "?id="+ userId +"" +
-                "&&currentChap="+ currentChap +"";
+        String url = "http://"+ global.ip_address +"/fashi/api/updateCurrentChap.php" +
+                "?email=" + userId +
+                "&&currentChap=" + currentChap;
         Request request = new Request.Builder().url(url).build();
 
         try {

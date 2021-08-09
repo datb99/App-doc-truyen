@@ -16,17 +16,17 @@ import tiendat.example.appdoctruyen.interfaces.UpdateLikedList;
 public class ApiUpdateLikedList extends AsyncTask<Void , Void , Void> {
 
     ArrayList<String> arrayList;
-    String id , idComic;
+    String idComic , email;
     int likeCount;
     String data , data1;
     UpdateLikedList updateLikedList;
 
-    public ApiUpdateLikedList(UpdateLikedList updateLikedList,ArrayList<String> arrayList , String id , String idComic , int likeCount){
+    public ApiUpdateLikedList(UpdateLikedList updateLikedList,ArrayList<String> arrayList , String idComic , int likeCount , String email){
         this.updateLikedList = updateLikedList;
         this.arrayList = arrayList;
-        this.id = id;
         this.idComic = idComic;
         this.likeCount = likeCount;
+        this.email = email;
     }
 
     @Override
@@ -39,13 +39,14 @@ public class ApiUpdateLikedList extends AsyncTask<Void , Void , Void> {
 
 
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/updateLikedList.php?" +
-                "id=" + id +
-                "&&likeList=" + newList;
 
-        String url1 = "http://"+ global.ip_address +"/public/api/updateLikeCount.php?" +
-                "idComic=" + idComic +
-                "&&likedCount=" + likeCount;
+        String url = "http://"+ global.ip_address +"/fashi/api/updateLikeList.php" +
+                "?email="+ email +
+                "&&likeList="+ newList;
+
+        String url1 = "http://"+ global.ip_address +"/fashi/api/updateLikeCount.php" +
+                "?idComic="+ idComic +
+                "&&likedCount="+ likeCount;
 
         Request request = new Request.Builder().url(url).build();
         Request request1 = new Request.Builder().url(url1).build();

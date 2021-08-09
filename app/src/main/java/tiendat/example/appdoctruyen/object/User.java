@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class User {
-    String id , passwword  , number , email , addr , currentReadingChap , avatar;
+    String id , name , passwword  , number , email , addr , currentReadingChap , avatar;
     ArrayList<String> arrayReadLater , arrayComicLiked;
 
     public User(String id, String passwword) {
@@ -16,7 +16,7 @@ public class User {
     }
 
     public User(JSONObject o ) throws JSONException {
-        this.id = o.getString("id");
+        this.name = o.getString("name");
         this.passwword = o.getString("password");
         this.number = o.getString("number");
         this.email = o.getString("email");
@@ -29,6 +29,10 @@ public class User {
 
         String listComicLiked = o.getString("comicLikedList");
         arrayComicLiked = new ArrayList<String>(Arrays.asList(listComicLiked.split("/")));
+
+        String string = o.getString("email");
+        String[] parts = string.split("@");
+        this.id = parts[0];
     }
 
 
@@ -103,5 +107,13 @@ public class User {
 
     public void setArrayComicLiked(ArrayList<String> arrayComicLiked) {
         this.arrayComicLiked = arrayComicLiked;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

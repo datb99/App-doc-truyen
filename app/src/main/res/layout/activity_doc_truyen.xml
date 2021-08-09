@@ -11,5 +11,66 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/chapControlContainer"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="42dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/constrait_controlchap_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_conner">
+
+            <ImageButton
+                android:scaleType="fitCenter"
+                android:padding="7dp"
+                android:id="@+id/preview"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/item_fab"
+                android:src="@drawable/left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/next"
+                android:scaleType="fitCenter"
+                android:padding="7dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/item_fab"
+                android:src="@drawable/left"
+                android:rotation="180"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/preview"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <ImageButton
+            android:id="@+id/displayChapControl"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@drawable/item_fab"
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus2_icon"
+            app:tint="@color/white" />
+
+    </FrameLayout>
+
 
 </RelativeLayout>

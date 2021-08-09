@@ -13,19 +13,19 @@ import tiendat.example.appdoctruyen.interfaces.LayTruyenVe;
 
 public class ApiLayLikedListComic extends AsyncTask<Void , Void , Void> {
 
-    String id , data;
+    String data , email;
     LayTruyenVe layTruyenVe;
 
-    public ApiLayLikedListComic(String id , LayTruyenVe layTruyenVe){
-        this.id = id;
+    public ApiLayLikedListComic(LayTruyenVe layTruyenVe , String email){
         this.layTruyenVe = layTruyenVe;
+        this.email = email;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
 
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/layListLikedComic.php?id=" + id;
+        String url = "http://"+ global.ip_address +"/fashi/api/layListLikeComic.php?email=" + email;
 
         Request request = new Request.Builder().url(url).build();
         data = null;

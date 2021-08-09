@@ -28,7 +28,9 @@ public class ApiDangNhap extends AsyncTask<Void , Void , Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/layUser.php?id=" + id + "&&password=" + password;
+        String url = "http://"+ global.ip_address +"/fashi/api/layUser.php" +
+                "?email=" + id +
+                "&&password=" + password;
         Request request = new Request.Builder().url(url).build();
         data = null;
         try {

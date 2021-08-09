@@ -33,20 +33,20 @@ public class ApiLayAnh extends AsyncTask<Void , Void , Void> {
     protected Void doInBackground(Void... voids) {
 
         OkHttpClient client = new OkHttpClient();
-        String url = "http://"+ global.ip_address +"/public/api/layAnh.php?idChap=";
-        Request request = new Request.Builder().url(url + idChap).build();
+        //String url = "http://"+ global.ip_address +"/public/api/layAnh.php?idChap=";
+        String url = "http://"+ global.ip_address +"/fashi/api/layAnh.php?idChap=" + idChap;
+        Request request = new Request.Builder().url(url).build();
         data = null;
         try {
             Response response = client.newCall(request).execute();
             ResponseBody body = response.body();
             data = body.string();
-            Log.d("TAG1432", "doInBackground: done lay truyen ve");
+            Log.d("TAG1432", "doInBackground: " + data);
 
         } catch (IOException e) {
             e.printStackTrace();
             data = null;
         }
-
         return null;
     }
 

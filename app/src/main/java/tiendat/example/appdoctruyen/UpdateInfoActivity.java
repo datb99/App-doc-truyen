@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -62,17 +63,26 @@ public class UpdateInfoActivity extends AppCompatActivity implements updateInfo 
         address.setText(user.getAddr());
 
 
-        String url = "http://"+ global.ip_address +"/public/userava/"+ global.user.getId() +".jpg";
+        String url = "http://"+ global.ip_address +"/fashi/userava/"+ global.user.getId() +".jpg";
 
-        Glide.with(getApplicationContext())
-                .load(url)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(avatar);
+        try {
+            Glide.with(getApplicationContext())
+                    .load(url)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(avatar);
+        } catch (Exception e) {
+            Glide.with(getApplicationContext())
+                    .load(R.drawable.ava_flurry)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(avatar);
+            e.printStackTrace();
+        }
+
     }
 
     private void setClick() {
-
 
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
